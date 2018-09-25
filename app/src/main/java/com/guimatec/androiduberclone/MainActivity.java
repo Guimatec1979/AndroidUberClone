@@ -2,6 +2,7 @@ package com.guimatec.androiduberclone;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
@@ -121,8 +122,34 @@ public class MainActivity extends AppCompatActivity {
                     return;
 
                 }
+
+                //Login
+                auth.signInWithEmailAndPassword(edtEmail.getText().toString(),edtPassword.getText().toString())
+                        .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+                            @Override
+                            public void onSuccess(AuthResult authResult) {
+                                startActivity(new Intent(MainActivity.this,Welcome.class));
+                                finish();
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Snackbar.make(rootLayout,"Failed "+e.getMessage(),Snackbar.LENGTH_SHORT)
+                                .show();
+                    }
+                });
+
             }
             });
+
+        dialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int which) {
+                dialogInterface.dismiss();
+
+            }
+        });
+
 
         dialog.show();
 
@@ -196,7 +223,7 @@ public class MainActivity extends AppCompatActivity {
                                 user.setPassword(edtPassword.getText().toString());
 
                                 //User email to key
-                                users.child(user.getEmail())
+                                users.child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                                         .setValue(user)
                                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
