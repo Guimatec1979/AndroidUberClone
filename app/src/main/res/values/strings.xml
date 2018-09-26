@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">AndroidUberClone</string>
+    <string name="app_name">UBER</string>
+    <string name="title_activity_welcome">Map</string>
+    <string name="title_activity_maps">Map</string>
 </resources>

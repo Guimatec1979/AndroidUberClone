@@ -23,6 +23,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.guimatec.androiduberclone.Model.User;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
+import dmax.dialog.SpotsDialog;
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
@@ -93,12 +94,19 @@ public class MainActivity extends AppCompatActivity {
 
         dialog.setView(login_layout);
 
-
+        //set button
         dialog.setPositiveButton("SIGN IN", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int which) {
 
                 dialogInterface.dismiss();
+
+                //set disable button Sign if is processing
+                btnSignIn.setEnabled(false);
+
+
+
+
 
                 //Check validation
                 if (TextUtils.isEmpty(edtEmail.getText().toString())) {
@@ -123,19 +131,28 @@ public class MainActivity extends AppCompatActivity {
 
                 }
 
+                final SpotsDialog waitingDialog = new SpotsDialog(MainActivity.this); //verificar depois AlertDialog
+                waitingDialog.show();
+
                 //Login
                 auth.signInWithEmailAndPassword(edtEmail.getText().toString(),edtPassword.getText().toString())
                         .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                             @Override
                             public void onSuccess(AuthResult authResult) {
+                                waitingDialog.dismiss();
                                 startActivity(new Intent(MainActivity.this,Welcome.class));
                                 finish();
                             }
                         }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
+                        waitingDialog.dismiss();
                         Snackbar.make(rootLayout,"Failed "+e.getMessage(),Snackbar.LENGTH_SHORT)
                                 .show();
+
+
+                        //Activite button
+                        btnSignIn.setEnabled(true);
                     }
                 });
 
